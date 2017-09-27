@@ -1,15 +1,14 @@
 require 'bundler/setup'
 require 'aws-sdk'
+require 'fileutils'
 require 'pry'
-
-DATE_RANGE = DateTime.new(2017, 9, 1)..DateTime.now
-TIME_RANGE = Time.parse('07:00')..Time.parse('18:00')
-MAX_INTERVAL_MINS = 60 * 24
+require_relative 'constants'
 
 def mins_between (datetime1, datetime2)
   ((datetime2.to_time - datetime1.to_time) / 60).floor
 end
 
+# this kinda sucks
 def is_within_time_range (time, range)
   time.strftime( "%H%M%S%N" ) >= range.first.strftime( "%H%M%S%N" ) &&
     time.strftime( "%H%M%S%N" ) <= range.last.strftime( "%H%M%S%N" )
@@ -42,10 +41,16 @@ end
 
 puts "Selected #{filtered.count} out of #{objects.count}"
 
+if Dir.exist? FRAMES_OUTPUT_DIR
+  FileUtils.rm_rf Dir.glob(File.join(FRAMES_OUTPUT_DIR, '*'))
+else
+  Dir.mkdir FRAMES_OUTPUT_DIR
+end
+
 filtered.each_with_index do |datetime, index|
-  filename = "#{datetime}.jpg"
+  filename = "#{index + 1}.jpg"
   object = bucket.object datetime.to_s
-  if object.download_file "./objects/#{filename}"
+  if object.download_file File.join(FRAMES_OUTPUT_DIR, filename)
     puts "Downloaded #{filename} (#{index + 1} of #{filtered.count})"
   end
 end
