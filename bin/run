@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+ruby sync_frames.rb
+ruby make_video.rb
