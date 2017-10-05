@@ -8,4 +8,4 @@ unless Dir.exist? PHOTOS_OUTPUT_DIR
   Dir.mkdir PHOTOS_OUTPUT_DIR
 end
 
-puts `aws s3 sync s3://#{PHOTOS_BUCKET_NAME} #{PHOTOS_OUTPUT_DIR}`
+puts `aws s3 sync s3://#{ENV.fetch('PHOTOS_BUCKET_NAME')} #{PHOTOS_OUTPUT_DIR}`
