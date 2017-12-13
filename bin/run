@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-ruby sync_photos.rb
-ruby make_frames.rb
-ruby make_video.rb
+ruby lib/sync_photos.rb
+ruby lib/make_frames.rb
+ruby lib/make_video.rb
