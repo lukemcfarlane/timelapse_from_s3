@@ -1,22 +1,8 @@
 require 'fileutils'
 require_relative 'constants'
 
-FRAMES_TEMP_DIR = File.join(File.dirname(__FILE__), 'frames_temp').freeze
-
-if !Dir.exist? PHOTOS_OUTPUT_DIR
-  raise "#{PHOTOS_OUTPUT_DIR} does not exist."
-end
-
-photos = Dir.glob(File.join(PHOTOS_OUTPUT_DIR, '*'))
-
-if Dir.exist? FRAMES_TEMP_DIR
-  FileUtils.rm_rf Dir.glob(File.join(FRAMES_TEMP_DIR, '*'))
-else
-  Dir.mkdir FRAMES_TEMP_DIR
-end
-
-photos.sort.each_with_index do |f, i|
-  FileUtils.cp(f, File.join(FRAMES_TEMP_DIR, "#{i}.jpg"))
+if !Dir.exist? FRAMES_TEMP_DIR
+  raise "#{FRAMES_TEMP_DIR} does not exist."
 end
 
 puts `ffmpeg -f image2 -framerate #{FRAMERATE} -pattern_type sequence \
