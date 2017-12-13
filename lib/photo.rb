@@ -9,7 +9,6 @@ class Photo
 
   def initialize(filename)
     @filename = filename
-    @image = ImageList.new(filename)
   end
 
   def <=> (other)
@@ -23,6 +22,9 @@ class Photo
   private
 
   def channel_mean
-    @channel_mean ||= @image.channel_mean.first.round
+    image = Image.read(filename).first
+    mean = image.channel_mean.first.round
+    image.destroy!
+    mean
   end
 end
