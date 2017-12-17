@@ -1,7 +1,7 @@
 require 'fileutils'
-require 'pry'
 require_relative 'constants'
 require_relative 'photo'
+require_relative 'logging'
 
 if !Dir.exist? PHOTOS_OUTPUT_DIR
   raise "#{PHOTOS_OUTPUT_DIR} does not exist."
@@ -9,7 +9,15 @@ end
 
 photo_filenames = Dir.glob(File.join(PHOTOS_OUTPUT_DIR, '*'))
 photos = photo_filenames.map { |filename| Photo.new(filename) }.sort
-valid_photos = photos.select &:valid?
+
+valid_photos = photos.select.with_index do |photo, i|
+  valid = photo.valid?
+
+  percent_complete = ((i/photos.count.to_f) * 100).round
+  show_status "Filtering photos outside exposure range: #{percent_complete}%"
+
+  valid
+end
 
 puts "Removed #{photos.count - valid_photos.count} photos that were outside exposure range"
 
