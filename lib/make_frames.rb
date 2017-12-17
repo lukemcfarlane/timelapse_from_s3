@@ -8,7 +8,7 @@ if !Dir.exist? PHOTOS_OUTPUT_DIR
 end
 
 photo_filenames = Dir.glob(File.join(PHOTOS_OUTPUT_DIR, '*'))
-photos = photo_filenames.map { |filename| Photo.new(filename) }
+photos = photo_filenames.map { |filename| Photo.new(filename) }.sort
 valid_photos = photos.select &:valid?
 
 puts "Removed #{photos.count - valid_photos.count} photos that were outside exposure range"
@@ -16,6 +16,7 @@ puts "Removed #{photos.count - valid_photos.count} photos that were outside expo
 filtered_photos = valid_photos.select.with_index do |_, i|
   i % SELECT_EVERY == 0
 end
+filtered_photos = valid_photos
 
 puts "Selected total of #{filtered_photos.count} photos"
 
@@ -25,6 +26,6 @@ else
   Dir.mkdir FRAMES_TEMP_DIR
 end
 
-filtered_photos.sort.each_with_index do |photo, i|
+filtered_photos.each_with_index do |photo, i|
   FileUtils.cp(photo.filename, File.join(FRAMES_TEMP_DIR, "#{i}.jpg"))
 end
